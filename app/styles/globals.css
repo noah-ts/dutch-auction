@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.wallet-adapter-button-trigger, .wallet-adapter-modal-wrapper {
+    background-color: #18181b !important;
+}
+
+.wallet-adapter-button-trigger:hover, .wallet-adapter-modal-button-close, .wallet-adapter-button:hover {
+    background-color: #3f3f46 !important;
+}
