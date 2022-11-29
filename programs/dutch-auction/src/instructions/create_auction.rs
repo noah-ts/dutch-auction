@@ -11,7 +11,6 @@ pub struct CreateAuctionCtx<'info> {
 
     #[account(
         mut,
-        constraint=creator_ata.owner == creator.key(),
         constraint=creator_ata.mint == mint.key()
     )]
     creator_ata: Account<'info, TokenAccount>,
@@ -22,7 +21,6 @@ pub struct CreateAuctionCtx<'info> {
         mut,
         seeds = [AUCTION_SEED.as_bytes(), mint.key().as_ref()],
         bump = auction.auction_bump,
-        constraint = auction.creator == creator.key(),
         constraint = auction.mint == mint.key(),
         constraint = auction.escrow == escrow.key(),
         constraint = auction.auction_state != AuctionState::Created as u8 @ ErrorCode::InvalidAuctionState,
@@ -47,6 +45,7 @@ pub fn handler(
     price_change: f64,
 ) -> Result<()> {
     let auction = &mut ctx.accounts.auction;
+    auction.creator = ctx.accounts.creator.key().clone();
     auction.starting_timestamp = starting_timestamp;
     auction.starting_price = starting_price;
     auction.min_price = min_price;

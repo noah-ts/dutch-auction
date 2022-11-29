@@ -30,7 +30,7 @@ export default function Home() {
         <meta name='description' content='Create and participate in Solana NFT dutch auctions' />
       </Head>
       <div className='mt-10 flex flex-col'>
-        <h1 className='text-2xl md:text-3xl font-bold text-center mb-40'>Dutch Auction</h1>
+        <h1 className='text-2xl md:text-3xl font-bold text-center mb-40'>Solana NFT Dutch Auction</h1>
         <form className='flex flex-col' onSubmit={goToExistingAuctionPage}>
           <div className='mb-4'>
             <label className='label-text text-base'>Mint of NFT</label>

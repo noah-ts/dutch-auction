@@ -25,7 +25,6 @@ pub struct InitializeAuctionPdaCtx<'info> {
 
 pub fn initialize_auction_handler(ctx: Context<InitializeAuctionPdaCtx>) -> Result<()> {
     let auction = &mut ctx.accounts.auction;
-    auction.creator = ctx.accounts.signer.key().clone();
     auction.mint = ctx.accounts.mint.key().clone();
     auction.auction_bump = *ctx.bumps.get("auction").unwrap();
     Ok(())

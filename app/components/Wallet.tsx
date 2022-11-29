@@ -1,19 +1,20 @@
 import React, { FC, ReactNode, useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import {
-    WalletModalProvider,
-    WalletMultiButton
+    WalletModalProvider
 } from '@solana/wallet-adapter-react-ui';
-import { clusterApiUrl } from '@solana/web3.js';
+import dynamic from 'next/dynamic';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
-export const Wallet: FC<{ children: ReactNode }> = ({ children }) => {
-    const network = WalletAdapterNetwork.Devnet;
+const WalletMultiButtonDynamic = dynamic(
+    async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+    { ssr: false }
+);
 
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+export const Wallet: FC<{ children: ReactNode }> = ({ children }) => {
+    const endpoint = 'https://lively-frequent-meadow.solana-mainnet.discover.quiknode.pro/1f1ef10280be82c5138b8e7b05808cb2707009f2/'
 
     const wallets = useMemo(
         () => [
@@ -21,17 +22,17 @@ export const Wallet: FC<{ children: ReactNode }> = ({ children }) => {
             new SolflareWalletAdapter()
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [network]
+        [endpoint]
     );
 
     return (
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <div className='p-2 md:p-6'>
-                        <div className='flex justify-end'><WalletMultiButton /></div>
+                    <main className='p-2 md:p-6'>
+                        <div className='flex justify-end'><WalletMultiButtonDynamic /></div>
                         {children}
-                    </div>
+                    </main>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

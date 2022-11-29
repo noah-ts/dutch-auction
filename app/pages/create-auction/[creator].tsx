@@ -3,10 +3,9 @@ import { PublicKey } from '@solana/web3.js'
 import { useMutation } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Spinner } from '../../components/Spinner'
 import { getCreateAuctionTxn } from '../../services/transactions/createAuction'
@@ -26,6 +25,13 @@ export default function CreateAuction() {
     const { connection } = useConnection()
     const router = useRouter()
 
+    useEffect(() => {
+        if (!wallet.publicKey) return
+        if (wallet.publicKey.toString() !== router.query.creator as string) {
+            router.push(`/create-auction/${wallet.publicKey.toString()}`)
+        }
+    }, [wallet.publicKey])
+
     const nfts = trpc.nftsByOwner.useQuery({ owner: router.query.creator as string }, { retry: false })
 
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<FormDataType>()
@@ -39,16 +45,17 @@ export default function CreateAuction() {
     const createAuctionMutation = useMutation({
         mutationFn: async (data: FormDataType) => {
             if (!wallet.publicKey) {
-                throw new Error('Please connect your wallet')
+                alert('Please connect your wallet')
+                throw new Error('Wallet not connected')
             }
             const { mint, startingDatetime, startingPrice, minPrice, intervalMins, priceChange } = data
-            setMintAddress('7RvG1kWnjkF1ZbipYTL7NU6HY7TvLnzMnSYor52ALAfM')
+            setMintAddress(mint)
 
             const txn = await getCreateAuctionTxn({
                 connection,
                 wallet,
                 creator: new PublicKey(wallet.publicKey),
-                mint: new PublicKey('7RvG1kWnjkF1ZbipYTL7NU6HY7TvLnzMnSYor52ALAfM'),
+                mint: new PublicKey(mint),
                 startingTimestamp: dayjs(startingDatetime).unix(),
                 startingPrice,
                 minPrice,
@@ -172,12 +179,12 @@ export default function CreateAuction() {
                         )}
                         {nfts.isSuccess && (
                             <div>
-                                {/* <select
+                                <select
                                     {...register('mint', {
                                         required: 'NFT is required'
                                     })}
                                     className='select select-bordered w-full'
-                                    defaultValue={'DpCnaDxca9wBvupD9i2TnkkXyCmdUTTQyqWwNZ5YWdbG'}
+                                    defaultValue={''}
                                 >
                                     <option disabled value={''}>NFT</option>
                                     {nfts.isSuccess && nfts.data.map(nft => <option key={nft.tokenAddress} value={nft.tokenAddress}>{nft.name}</option>)}
@@ -185,8 +192,8 @@ export default function CreateAuction() {
                                 {watchMint && (
                                     <div className='flex justify-center items-center'>
                                         <div className='mt-4'>
-                                            <Image
-                                                alt={`${watchMint} image`}
+                                            <img
+                                                alt='NFT image'
                                                 src={nfts.data.find(nft => nft.tokenAddress === watchMint)?.imageUrl || ''}
                                                 height={240}
                                                 width={240}
@@ -194,7 +201,7 @@ export default function CreateAuction() {
                                             />
                                         </div>
                                     </div>
-                                )} */}
+                                )}
                             </div>
                         )}
                         {errors.mint && <span className='text-error'>{errors.mint.message}</span>}
@@ -219,8 +226,30 @@ export default function CreateAuction() {
                                     {' '}successfully!
                                 </span>
                             </div>
+                            <div className='flex'>
+                                <div className=''>Copy and share this link with others:</div>
+                                <div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-6 h-6 cursor-pointer active:bg-accent"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`${window.location.origin}/auctions/${mintAddress}`)
+                                        }}
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     )}
+                    <ul className='list-disc mt-4'>
+                        <li>Platform fee is 0.5%</li>
+                        <li>You will be able to cancel the auction to get back your NFT when it reaches the minimum price</li>
+                    </ul>
                     <input type='submit' className={`my-6 btn btn-primary ${createAuctionMutation.isLoading && 'loading'}`}/>
                 </form>
             </div>

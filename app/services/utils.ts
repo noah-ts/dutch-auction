@@ -66,8 +66,7 @@ export const getCurrentPrice = (
 ) => {
     if (dayjs() < startingDate) return startingPrice
     const diffMins = dayjs().diff(startingDate, 'minutes')
-    const numOfTimesChanged = numbro(diffMins).divide(intervalMins)
-    if (numOfTimesChanged.value() % 1 !== 0) return undefined
-    const price = numOfTimesChanged.multiply(priceChange).value()
+    const numOfTimesChanged = Math.floor(numbro(diffMins).divide(intervalMins).value())
+    const price = numbro(numOfTimesChanged).multiply(priceChange).value()
     return Math.max(minPrice, numbro(startingPrice).subtract(price).value())
 }

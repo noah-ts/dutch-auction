@@ -14,27 +14,10 @@ type NftType = {
   traits: { trait_type: string, value: string }[]
 }
 
-const imageNftallowedDomains = [
-  'arweave.net',
-  'www.arweave.net',
-  'nftstorage.link',
-  'www.nftstorage.link'
-]
-
 const getNFTsByOwner = async (owner: string) => {
   const url = `https://api.helius.xyz/v0/addresses/${owner}/nfts?api-key=${HELIUS_API_KEY}`
   const { data } = await axios.get(url)
-  if (data.nfts) {
-    if (data.nfts) {
-      return (data.nfts as NftType[]).filter(nft => {
-        for (const domain of imageNftallowedDomains) {
-          if (nft.imageUrl.includes(domain)) return true
-        }
-        return false
-      })
-    }
-  }
-  return []
+  return data.nfts as NftType[]
 }
 
 export const appRouter = router({
