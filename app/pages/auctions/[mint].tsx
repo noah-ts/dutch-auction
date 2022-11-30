@@ -2,7 +2,6 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import numbro from 'numbro'
@@ -131,10 +130,6 @@ export default function ExistingAuction() {
         const startingDate = dayjs.unix(Number(startingTimestamp))
 
         return <div>
-            <Head>
-                <title>Solana NFT Dutch Auction</title>
-                <meta name='description' content='Create and participate in Solana NFT dutch auctions' />
-            </Head>
             <Link href='/'>
                 <button className='btn btn-accent'>Go back</button>
             </Link>
