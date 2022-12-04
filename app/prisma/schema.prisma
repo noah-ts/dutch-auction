@@ -14,7 +14,7 @@ model Auction {
   startingPrice Int
   minPrice Int
   boughtPrice Int?
-  priceChange Int
+  priceChange Float
   intervalMins Int
   auctionState AuctionState
   name String
