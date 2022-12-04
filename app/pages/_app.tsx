@@ -8,7 +8,7 @@ import Head from 'next/head'
 function App({ Component, pageProps }: AppProps) {
   return <>
     <Head>
-      <link rel="apple-touch-icon" href="../public/custom_icon.png"/>
+      <link rel="apple-touch-icon" href="/custom_icon.png"/>
     </Head>
     <Wallet>
       {/* <!-- Google tag (gtag.js) --> */}
