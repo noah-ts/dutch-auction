@@ -73,6 +73,8 @@ export default function CreateAuction() {
                 intervalMins,
                 priceChange
             })
+    
+            await wallet.sendTransaction(txn, connection)
 
             const { name, imageUrl } = nfts.data.find(nft => nft.tokenAddress === mint) as NftHeliusType
 
@@ -88,8 +90,6 @@ export default function CreateAuction() {
                 name,
                 imageUrl
             })
-    
-            await wallet.sendTransaction(txn, connection)
         }
     })
 
