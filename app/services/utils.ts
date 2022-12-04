@@ -51,9 +51,9 @@ export const getNftByMintMetaplex = async (connection: Connection, mint: PublicK
 
 export const getAuctionState = (value: number) => {
     switch (value) {
-        case 1: return 'Created'
-        case 2: return 'Closed'
-        case 3: return 'Cancelled'
+        case 1: return 'CREATED'
+        case 2: return 'CLOSED'
+        case 3: return 'CANCELLED'
     }
 }
 

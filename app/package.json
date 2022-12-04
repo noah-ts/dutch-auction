@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@metaplex-foundation/js": "^0.17.6",
+    "@prisma/client": "^4.7.1",
     "@project-serum/anchor": "^0.25.0",
     "@solana/spl-token": "^0.3.6",
     "@solana/wallet-adapter-base": "^0.9.19",
@@ -28,6 +29,7 @@
     "axios": "^1.2.0",
     "daisyui": "^2.42.1",
     "dayjs": "^1.11.6",
+    "jotai": "^1.11.0",
     "next": "13.0.5",
     "numbro": "^2.3.6",
     "react": "18.2.0",
@@ -39,6 +41,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
+    "prisma": "^4.7.1",
     "tailwindcss": "^3.2.4"
   }
 }
