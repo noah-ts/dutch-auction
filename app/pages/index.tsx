@@ -42,7 +42,7 @@ export default function Home() {
 
   const renderAuctions = () => {
     if (auctionsQuery.isLoading) {
-      return <div className='flex justify-center items-center h-screen'><Spinner /></div>
+      return <div className='flex justify-center items-center h-1/2 md:h-2/3'><Spinner /></div>
     }
 
     if (auctionsQuery.isError) {
