@@ -25,7 +25,7 @@ export const createAuction = procedure
 .mutation(async ({ input }) => {
     const auction = await prisma.auction.findUnique({ where: { mint: input.mint } })
     if (auction) {
-        await prisma.auction.update({ where: { mint: input.mint }, data: { auctionState: input.auctionState } })
+        await prisma.auction.update({ where: { mint: input.mint }, data: input })
     } else {
         await prisma.auction.create({ data: input })
     }

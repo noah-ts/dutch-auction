@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn migrate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "./node_modules/.bin/prisma generate && ./node_modules/.bin/prisma migrate deploy"
   },
   "dependencies": {
     "@metaplex-foundation/js": "^0.17.6",
