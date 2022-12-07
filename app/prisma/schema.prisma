@@ -11,9 +11,9 @@ model Auction {
   mint String @id @unique
   creator String
   startingDateUTC String
-  startingPrice Int
-  minPrice Int
-  boughtPrice Int?
+  startingPrice Float
+  minPrice Float
+  boughtPrice Float?
   priceChange Float
   intervalMins Int
   auctionState AuctionState
