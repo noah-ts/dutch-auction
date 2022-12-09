@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { procedure } from '../trpc'
 import { prisma } from '../db'
+import dayjs from 'dayjs'
 
 const AuctionStateSchema = z.enum(['CREATED', 'CLOSED', 'CANCELLED'])
 
@@ -49,8 +50,8 @@ export const getAllAuctions = procedure
         name: z.string().nullable().nullish()
     })
 )
-.query(({ input: { skip, name } }) => {
-    return prisma.auction.findMany({
+.query(async ({ input: { skip, name } }) => {
+    const auctions = await prisma.auction.findMany({
         take: 20,
         skip,
         where: {
@@ -58,9 +59,8 @@ export const getAllAuctions = procedure
                 contains: name ?? undefined,
                 mode: 'insensitive'
             }
-        },
-        orderBy: {
-            startingDateUTC: 'desc'
         }
     })
+    const sortedAuctions = auctions.sort((a, b) => dayjs(b.startingDateUTC).unix() - dayjs(a.startingDateUTC).unix())
+    return sortedAuctions
 })

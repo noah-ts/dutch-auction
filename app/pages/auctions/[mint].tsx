@@ -40,6 +40,23 @@ export default function ExistingAuction() {
                 throw new Error('Wallet not connected')
             }
 
+            if (!auctionQuery.data?.auctionData) return
+
+            const { startingTimestamp, startingPrice, minPrice, priceChange, intervalMins } = auctionQuery.data.auctionData
+            const startingDatetime = dayjs.unix(Number(startingTimestamp))
+            const currPrice = getCurrentPrice(
+                startingDatetime.clone(),
+                startingPrice,
+                minPrice,
+                intervalMins,
+                priceChange
+            )
+
+            if (!currPrice || currPrice !== minPrice) {
+                alert('Current price did not reach minimum price yet')
+                throw new Error('Current price did not reach minimum price yet')
+            }
+
             const txn = await getCancelAuctionTxn({
                 connection,
                 wallet,
@@ -66,6 +83,11 @@ export default function ExistingAuction() {
             if (!wallet.publicKey) {
                 alert('Please connect your wallet')
                 throw new Error('Wallet not connected')
+            }
+
+            if (dayjs() < dayjs.unix(Number(auctionQuery.data?.auctionData?.startingTimestamp))) {
+                alert('Auction did not start yet')
+                throw new Error('Auction did not start yet')
             }
 
             const txn = await getCloseAuctionTxn({
@@ -205,7 +227,7 @@ export default function ExistingAuction() {
                                 <div className="alert alert-error shadow-lg my-6">
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                        <span>Error cancelling auction, please try again.</span>
+                                        <span>Error cancelling auction</span>
                                     </div>
                                 </div>
                             )}
@@ -221,7 +243,7 @@ export default function ExistingAuction() {
                                 <div className="alert alert-error shadow-lg my-6">
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                        <span>Error closing auction, please try again.</span>
+                                        <span>Error closing auction</span>
                                     </div>
                                 </div>
                             )}
