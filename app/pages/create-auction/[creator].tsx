@@ -274,7 +274,7 @@ export default function CreateAuction() {
                             </div>
                         )}
                         <ul className='list-disc mt-4'>
-                            <li>Platform fee is 0.5%</li>
+                            <li>Platform fee is 5%</li>
                             <li>You will be able to cancel the auction to get back your NFT when it reaches the minimum price</li>
                         </ul>
                         <input type='submit' className={`my-6 btn btn-primary ${createAuctionMutation.isLoading && 'loading'}`}/>
