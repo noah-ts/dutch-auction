@@ -119,7 +119,7 @@ pub fn handler(ctx: Context<CloseAuctionCtx>) -> Result<()> {
         auction.price_change
     );
 
-    // transferring sol from buyer to creator (95.5% to the seller)
+    // transferring sol from buyer to creator (95% to the seller)
     solana_program::program::invoke(
         &solana_program::system_instruction::transfer(
             &ctx.accounts.buyer.key(),
@@ -132,7 +132,7 @@ pub fn handler(ctx: Context<CloseAuctionCtx>) -> Result<()> {
         ]
     )?;
 
-    // transferring sol from buyer to developer (0.5% fee)
+    // transferring sol from buyer to developer (5% fee)
     solana_program::program::invoke(
         &solana_program::system_instruction::transfer(
             &ctx.accounts.buyer.key(),
