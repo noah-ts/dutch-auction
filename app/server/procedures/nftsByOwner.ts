@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import axios from 'axios'
+import fetch from 'node-fetch'
 import { z } from 'zod'
 import { NftHeliusType } from '../../types/NftHeliusType'
 import { procedure } from '../trpc'
@@ -7,9 +7,30 @@ import { procedure } from '../trpc'
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY
 
 const getNFTsByOwner = async (owner: string) => {
-  const url = `https://api.helius.xyz/v0/addresses/${owner}/nfts?api-key=${HELIUS_API_KEY}`
-  const { data } = await axios.get(url)
-  return data.nfts as NftHeliusType[]
+  const url = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 'my-id',
+      method: 'getAssetsByOwner',
+      params: {
+        ownerAddress: owner,
+        page: 1, // Starts at 1
+        limit: 1000
+      },
+    }),
+  });
+  const { result } = await response.json() as any;
+  return result.items.map((item: any) => ({
+    tokenAddress: item.id,
+    name: item.content.metadata.name,
+    imageUrl: item.content.links.image
+  })).filter((item: any) => item.name) as NftHeliusType[]
 }
 
 export const nftsByOwner = procedure
